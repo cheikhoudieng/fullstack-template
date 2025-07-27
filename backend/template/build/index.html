@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    {% load static %} {% load render_bundle from webpack_loader %}
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'favicon/favicon.ico' %}"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0052da" />
+    <link rel="manifest" href="{% static 'manifest.json' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>{{ seo.title|default:"Titre par défaut" }}</title>
+    {% if seo.canonical %}
+    <link rel="canonical" href="{{ seo.canonical }}" />
+    {% endif %} {% for tag in seo.meta_tags %} {% if tag.type == 'name' %}
+    <meta name="{{ tag.name_or_property }}" content="{{ tag.content }}" />
+    {% elif tag.type == 'property' %}
+    <meta property="{{ tag.name_or_property }}" content="{{ tag.content }}" />
+    {% endif %} {% endfor %} {% for script_content in seo.json_ld %}
+    <script type="application/ld+json">
+      {{ script_content|safe }}
+    </script>
+    {% endfor %} {% render_bundle 'main' 'css' %}
+  </head>
+  <body>
+    <noscript
+      >Vous devez activer JavaScript pour exécuter cette application.</noscript
+    >
+    <div id="root">
+      {% if page_html_content %}{{ page_html_content|safe }}{% endif %}
+    </div>
+
+    {% render_bundle 'main' 'js' attrs='defer id="main-js-bundle"' %}
+  </body>
+</html>
